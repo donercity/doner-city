@@ -73,16 +73,12 @@ pane.querySelectorAll("[data-edit-item]").forEach(b=>b.onclick=()=>{let i=items.
 }else if(tab==="promos"){pane.innerHTML=`<h3>Добавить акцию</h3><form id="addPromo" class="admin-content">${field("Название акции","title")}${field("Метка","discount","Акция")}<div class="field wide"><label>Описание</label><textarea name="desc"></textarea></div><div class="wide"><button class="btn">+ Добавить акцию</button></div></form><h3 style="margin-top:28px">Текущие акции</h3><div class="admin-list">${promos.map(p=>`<div class="admin-item"><div><b>${esc(p.title)}</b><small>${esc(p.discount)} • ${p.active?"Активна":"Скрыта"}</small></div><div class="admin-actions"><button class="btn btn-outline" data-toggle-promo="${p.id}">${p.active?"Скрыть":"Показать"}</button><button class="btn btn-outline" data-edit-promo="${p.id}">Изменить</button><button class="btn danger" data-del-promo="${p.id}">Удалить</button></div></div>`).join("")||'<div class="empty">Акций пока нет.</div>'}</div>`;
 document.getElementById("addPromo").onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);promos.push({id:Date.now(),title:f.get("title").trim(),discount:f.get("discount").trim(),desc:f.get("desc").trim(),active:true});save()};
 paconst ADMIN_PASSWORD = "DonerCity2026";
-
 document.getElementById("openAdmin").onclick = () => {
-    const password = prompt("🔐 Введите пароль для управления сайтом:");
-
-    if (password !== ADMIN_PASSWORD) {
+    const password = prompt("🔐 Введите пароль для управления сайтом:");if (password !== ADMIN_PASSWORD) {
         alert("❌ Неверный пароль!");
         return;
     }
-
-    document.getElementById("adminModal").classList.add("show");
+document.getElementById("adminModal").classList.add("show");
     document.getElementById("adminModal").setAttribute("aria-hidden", "false");
     renderAdmin();
 };ne.querySelectorAll("[data-toggle-promo]").forEach(b=>b.onclick=()=>{let p=promos.find(x=>x.id==b.dataset.togglePromo);p.active=!p.active;save()});
