@@ -72,13 +72,26 @@ pane.querySelectorAll("[data-del-item]").forEach(b=>b.onclick=()=>{if(confirm("�
 pane.querySelectorAll("[data-edit-item]").forEach(b=>b.onclick=()=>{let i=items.find(x=>x.id==b.dataset.editItem);let name=prompt("Название",i.name);if(name===null)return;let price=prompt("Цена в сомах",i.price);if(price===null)return;let desc=prompt("Описание",i.desc);if(desc===null)return;i.name=name.trim()||i.name;i.price=Math.max(0,Number(price)||0);i.desc=desc;save()});
 }else if(tab==="promos"){pane.innerHTML=`<h3>Добавить акцию</h3><form id="addPromo" class="admin-content">${field("Название акции","title")}${field("Метка","discount","Акция")}<div class="field wide"><label>Описание</label><textarea name="desc"></textarea></div><div class="wide"><button class="btn">+ Добавить акцию</button></div></form><h3 style="margin-top:28px">Текущие акции</h3><div class="admin-list">${promos.map(p=>`<div class="admin-item"><div><b>${esc(p.title)}</b><small>${esc(p.discount)} • ${p.active?"Активна":"Скрыта"}</small></div><div class="admin-actions"><button class="btn btn-outline" data-toggle-promo="${p.id}">${p.active?"Скрыть":"Показать"}</button><button class="btn btn-outline" data-edit-promo="${p.id}">Изменить</button><button class="btn danger" data-del-promo="${p.id}">Удалить</button></div></div>`).join("")||'<div class="empty">Акций пока нет.</div>'}</div>`;
 document.getElementById("addPromo").onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);promos.push({id:Date.now(),title:f.get("title").trim(),discount:f.get("discount").trim(),desc:f.get("desc").trim(),active:true});save()};
-pane.querySelectorAll("[data-toggle-promo]").forEach(b=>b.onclick=()=>{let p=promos.find(x=>x.id==b.dataset.togglePromo);p.active=!p.active;save()});
+paconst ADMIN_PASSWORD = "DonerCity2026";
+
+document.getElementById("openAdmin").onclick = () => {
+    const password = prompt("🔐 Введите пароль для управления сайтом:");
+
+    if (password !== ADMIN_PASSWORD) {
+        alert("❌ Неверный пароль!");
+        return;
+    }
+
+    document.getElementById("adminModal").classList.add("show");
+    document.getElementById("adminModal").setAttribute("aria-hidden", "false");
+    renderAdmin();
+};ne.querySelectorAll("[data-toggle-promo]").forEach(b=>b.onclick=()=>{let p=promos.find(x=>x.id==b.dataset.togglePromo);p.active=!p.active;save()});
 pane.querySelectorAll("[data-del-promo]").forEach(b=>b.onclick=()=>{if(confirm("Удалить акцию?")){promos=promos.filter(x=>x.id!=b.dataset.delPromo);save()}});
 pane.querySelectorAll("[data-edit-promo]").forEach(b=>b.onclick=()=>{let p=promos.find(x=>x.id==b.dataset.editPromo);let title=prompt("Название",p.title);if(title===null)return;let desc=prompt("Описание",p.desc);if(desc===null)return;p.title=title;p.desc=desc;save()});
 }else{pane.innerHTML=`<h3>Информация о кафе</h3><form id="saveInfo" class="admin-content">${field("Номер WhatsApp (международный формат)","phone",info.phone)}${field("Часы работы","hours",info.hours)}<div class="field wide"><label>Адрес</label><input name="address" value="${esc(info.address)}"></div><div class="field wide"><label>Текст на главной</label><textarea name="heroText">${esc(info.heroText)}</textarea></div><div class="field wide"><label>О кафе</label><textarea name="aboutText">${esc(info.aboutText)}</textarea></div><div class="wide"><button class="btn">Сохранить информацию</button></div></form><p class="admin-note">Изменения сохраняются только в текущем браузере. Номер WhatsApp должен быть в международном формате без пробелов, например +996777484040.</p>`;
 document.getElementById("saveInfo").onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);info={phone:f.get("phone").trim(),hours:f.get("hours").trim(),address:f.get("address").trim(),heroText:f.get("heroText").trim(),aboutText:f.get("aboutText").trim()};save();alert("Информация сохранена в этом браузере.")}}
 }
-document.getElementById("openAdmin").onclick=()=>{document.getElementById("adminModal").classList.add("show");document.getElementById("adminModal").setAttribute("aria-hidden","false");renderAdmin()};
+
 document.getElementById("closeAdmin").onclick=()=>{document.getElementById("adminModal").classList.remove("show");document.getElementById("adminModal").setAttribute("aria-hidden","true")};
 document.getElementById("adminModal").onclick=e=>{if(e.target.id==="adminModal")document.getElementById("closeAdmin").click()};
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));renderAdmin()});
